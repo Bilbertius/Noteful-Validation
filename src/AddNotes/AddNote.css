@@ -1,0 +1,21 @@
+form {
+    display : flex;
+    flex-flow: column nowrap;
+    justify-content:flex-start;
+    align-items: baseline;
+    min-width: 25vw;
+}
+
+form > input, form > textarea {
+    width: 35%;
+}
+
+button#save-note, button#save-folder {
+    background-color: inherit;
+    border: 2px solid white;
+    color: white;
+    align-self : baseline;
+    padding: 1vh 3vw;
+    margin-top: 2vh;
+    margin-left: 3vw;
+}

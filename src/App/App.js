@@ -114,10 +114,10 @@ class App extends Component {
   render(){
     const ctxValue = {
       notes: this.state.notes,
-      deleteNote: this.handleDelete,
       folders: this.state.folders,
       addFolder: this.handleAddFolder,
-      addNote: this.handleAddNote
+      addNote: this.handleAddNote,
+      deleteNote: this.handleDelete
     };
     return (
         <ErrorBoundary>

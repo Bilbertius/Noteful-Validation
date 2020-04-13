@@ -8,19 +8,20 @@ class AddNote extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: {
+            title: {
                 value: '',
                 touched: false
             },
             folderId: {
                 value: '',
                 touched: false
-            },
+        },
             content: {
                 value: '',
                 touched: false
-            }
-        }
+            },
+          
+    }
     }
     
     static contextType = NoteContext;
@@ -29,17 +30,18 @@ class AddNote extends React.Component {
         event.preventDefault();
         
         const newNote = JSON.stringify({
-            title: this.state.name.value,
+            title: this.state.title.value,
             folder_id: this.state.folderId.value,
             content: this.state.content.value,
+            date_modified: new Date()
         })
-        
+    
         fetch(`${config.API_ENDPOINT}/notes`,
             {
-                method: 'POST',
+            method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: newNote
-            })
+        })
             .then(res => {
                 if (!res.ok)
                     return res.json().then(e => Promise.reject(e))
@@ -60,13 +62,13 @@ class AddNote extends React.Component {
                 value: folderId,
                 touched: true
             }
-        })
+            })
     }
     
-    updateName = (name) => {
+    updateTitle = (title) => {
         this.setState({
-            name: {
-                value: name,
+            title: {
+                value: title,
                 touched: true
             }
         })
@@ -81,9 +83,9 @@ class AddNote extends React.Component {
         })
     }
     
-    validateName() {
-        const name = this.state.name.value.trim();
-        if (name.length === 0) {
+    validateTitle() {
+        const title = this.state.title.value.trim();
+        if (title.length === 0) {
             return 'Name is required'
         }
     }
@@ -95,23 +97,23 @@ class AddNote extends React.Component {
     
     render() {
         const folderList = this.context.folders.map (folder => {
-            return (
-                <option key= {folder.id} value={folder.id}>{folder.folder_name}</option>
+        return (
+                <option key= {folder.id} value={folder.id}>{folder.name}</option>
             )
         })
         
         
         return (
             <form onSubmit={this.handleNoteSubmit}>
-                <label htmlFor="note-name">Title *</label>
+                <label htmlFor="title">Title *</label>
                 <input
-                    id="note-name"
+                    id="title"
                     type="text"
-                    name="note-name"
-                    onChange={e => this.updateName(e.target.value)}
+                    name="title"
+                    onChange={e => this.updateTitle(e.target.value)}
                 >
                 </input>
-                {this.state.name.touched && (<ValidationError message = {this.validateName()}/>)}
+                {this.state.name.touched && (<ValidationError message = {this.validateTitle()}/>)}
                 <label htmlFor="content">Content</label>
                 <textarea id="content"
                           name="content"
@@ -126,11 +128,9 @@ class AddNote extends React.Component {
                 >
                     <option disabled>Select Folder</option>
                     {folderList}
-                </select>
-                <button
-                    id='save-note'
-                    type="submit"
-                        disabled = {this.validateName()||this.validateFolderSelect()
+                        </select>
+                <button type="submit"
+                        disabled = {this.validateTitle()||this.validateFolderSelect()
                         }
                 >Save</button>
             </form>

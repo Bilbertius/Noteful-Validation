@@ -15,13 +15,13 @@ class AddFolder extends React.Component {
         };
     }
     
-    static contextType = NoteContext; // used to avoid prop drilling
+    static contextType = NoteContext;
     
     handleFolderFormSubmit = (event) => {
         event.preventDefault();
         
         const newFolder = JSON.stringify({
-            folder_name: this.state.name.value
+            name: this.state.name.value
         })
         
         fetch(`${config.API_ENDPOINT}/folders`,

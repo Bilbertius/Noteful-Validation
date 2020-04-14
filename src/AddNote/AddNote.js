@@ -1,51 +1,45 @@
 import React from 'react';
 import config from '../config';
 import NoteContext from '../NoteContext';
-import ValidationError from '../ValidationError';
+//import ValidationError from '../ValidationError';
 import PropTypes from 'prop-types';
 import './AddNote.css';
 class AddNote extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: {
-                value: '',
-                touched: false
-            },
-            folderId: {
-                value: '',
-                touched: false
-            },
-            content: {
-                value: '',
-                touched: false
-            }
+            name: '',
+            folder: '',
+            content: ''
         }
-    }
+        }
     
     static contextType = NoteContext;
+    
+ 
     
     handleNoteSubmit = (event) => {
         event.preventDefault();
         
         const newNote = JSON.stringify({
-            title: this.state.name.value,
-            folder_id: this.state.folderId.value,
-            content: this.state.content.value,
+            name: this.state.name,
+            folder_id: this.state.folder,
+            content: this.state.content,
+            modified: new Date()
         })
-        
+        console.log(newNote);
         fetch(`${config.API_ENDPOINT}/notes`,
             {
-                method: 'POST',
+            method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: newNote
-            })
+        })
             .then(res => {
                 if (!res.ok)
                     return res.json().then(e => Promise.reject(e))
                 return res.json()
             })
-            .then(response => this.context.addNote(response))
+            .then(note => this.context.addNote(note))
             .then(
                 this.props.history.push('/')
             )
@@ -53,85 +47,87 @@ class AddNote extends React.Component {
                 alert(error.message)
             })
     }
+
     
-    updateFolderId = (folderId) => {
+    updateFolder = (e) => {
         this.setState({
-            folderId: {
-                value: folderId,
-                touched: true
-            }
+            folder: e.target.value
+            }, () => {
+            console.log(this.state.folder)
+           })
+    }
+    
+    updateName = (e) => {
+        this.setState({
+            name: e.target.value
+        }, () => {
+            console.log(this.state.name)
         })
     }
     
-    updateName = (name) => {
+    updateContent = (e) => {
         this.setState({
-            name: {
-                value: name,
-                touched: true
-            }
+            content: e.target.value
         })
     }
-    
-    updateContent = (content) => {
-        this.setState({
-            content: {
-                value: content,
-                touched: true
-            }
-        })
-    }
-    
+    /*
     validateName() {
-        const name = this.state.name.value.trim();
+        const name = this.state.name.trim();
         if (name.length === 0) {
             return 'Name is required'
         }
     }
-    
     validateFolderSelect() {
         const folderIsSelected = this.state.folderId.value;
         return !folderIsSelected;
     }
+    */
+    
     
     render() {
         const folderList = this.context.folders.map (folder => {
-            return (
-                <option key= {folder.id} value={folder.id}>{folder.folder_name}</option>
+        return (
+                <option key= {folder.id} value={folder.id}>{folder.name}</option>
             )
         })
         
         
         return (
             <form onSubmit={this.handleNoteSubmit}>
-                <label htmlFor="note-name">Title *</label>
+                <label htmlFor="note-name">Note name: </label>
                 <input
                     id="note-name"
                     type="text"
-                    name="note-name"
-                    onChange={e => this.updateName(e.target.value)}
+                    name="name"
+                    value={this.state.name}
+                    onChange={this.updateName}
+                    required
                 >
                 </input>
-                {this.state.name.touched && (<ValidationError message = {this.validateName()}/>)}
+              
                 <label htmlFor="content">Content</label>
-                <textarea id="content"
-                          name="content"
-                          onChange={e => this.updateContent(e.target.value)}
-                ></textarea>
-                <label htmlFor="folders">Save in *</label>
+                <textarea
+                    id="content"
+                    name="content"
+                    value={this.state.content}
+                    onChange={this.updateContent}
+                    required
+                />
+                <label htmlFor="folders">Store in...</label>
                 <select
                     id="folders"
-                    name="folders"
-                    onChange={e => this.updateFolderId(e.target.value)}
+                    name="folder"
+                    onChange={this.updateFolder}
                     defaultValue="Select Folder"
+                    required
                 >
                     <option disabled>Select Folder</option>
                     {folderList}
-                </select>
+                        </select>
+                    
                 <button
                     id='save-note'
                     type="submit"
-                        disabled = {this.validateName()||this.validateFolderSelect()
-                        }
                 >Save</button>
             </form>
         )

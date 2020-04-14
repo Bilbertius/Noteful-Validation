@@ -8,7 +8,7 @@ import NotePageMain from '../NotePageMain/NotePageMain';
 import config from '../config';
 import NoteContext from '../NoteContext';
 import AddFolder from '../AddFolder/AddFolder';
-import AddNote from '../AddNotes/AddNote';
+import AddNote from '../AddNote/AddNote';
 import './App.css';
 import ErrorBoundary from '../ErrorBoundary';
 
@@ -100,11 +100,11 @@ class App extends Component {
         path="/note/:noteId" 
         component = {NotePageMain}
       />
-      <Route 
-        path="/add-folder" 
+      <Route
+        path="/add-folder"
         component={AddFolder}
       />
-      <Route 
+      <Route
         path="/add-note"
         component={AddNote}
       />

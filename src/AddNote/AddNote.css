@@ -1,0 +1,35 @@
+form {
+    display : flex;
+    flex-flow: column nowrap;
+    justify-content:flex-start;
+    align-items: baseline;
+    min-width: 25vw;
+}
+
+form > input, form > textarea, form > select {
+    width: 35%;
+    box-shadow: -3px 6px 12px inset hsl(217, 23%, 22%);
+    border: none;
+    border-radius: 4px;
+}
+
+form > select, form > input {
+    height: 4vh;
+}
+
+button#save-note, button#save-folder {
+    background-color: inherit;
+    border: none;
+    color: white;
+    align-self : baseline;
+    padding: 1vh 3vw;
+    margin-top: 2vh;
+    margin-left: 3vw;
+    box-shadow: -1px 1px 2px inset hsla(213, 15%, 88%, 0.48),
+                -1px 1px  2px  hsla(213, 15%, 48%, 0.38)
+;
+}
+
+button#save-note:hover, button#save-folder:hover {
+    background-color: hsl(215, 51%, 24%);
+}

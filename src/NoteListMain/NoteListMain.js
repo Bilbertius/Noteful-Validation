@@ -20,7 +20,7 @@ export default class NoteListMain extends Component {
   render() {
     const { folderId } = this.props.match.params
     const { notes=[] } = this.context
-    const notesForFolder = getNotesForFolder(notes, parseInt(folderId))
+    const notesForFolder = getNotesForFolder(notes, folderId)
     return (
         <section className='NoteListMain'>
           <ul>
@@ -28,8 +28,8 @@ export default class NoteListMain extends Component {
                 <li key={note.id}>
                   <Note
                       id={note.id}
-                      title={note.title}
-                      date_modified={note.date_modified}
+                name={note.name}
+                modified={note.modified}
                   />
                 </li>
             )}

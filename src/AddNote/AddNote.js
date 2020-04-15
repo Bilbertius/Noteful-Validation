@@ -1,6 +1,7 @@
 import React from 'react';
 import config from '../config';
 import NoteContext from '../NoteContext';
+import NotefulForm from '../NotefulForm/NotefulForm';
 //import ValidationError from '../ValidationError';
 import PropTypes from 'prop-types';
 import './AddNote.css';
@@ -12,7 +13,12 @@ class AddNote extends React.Component {
             folder: '',
             content: ''
         }
+    }
+    static defaultProps = {
+        history: {
+            push: () => { }
         }
+    }
     
     static contextType = NoteContext;
     
@@ -20,32 +26,33 @@ class AddNote extends React.Component {
     
     handleNoteSubmit = (event) => {
         event.preventDefault();
-        
-        const newNote = JSON.stringify({
+    
+        const newNote = {
             name: this.state.name,
             folder_id: this.state.folder,
             content: this.state.content,
             modified: new Date()
-        })
-        console.log(newNote);
+        }
+    
         fetch(`${config.API_ENDPOINT}/notes`,
             {
-            method: 'POST',
+                method: 'POST',
                 headers: { 'content-type': 'application/json' },
-                body: newNote
-        })
-            .then(res => {
-                if (!res.ok)
-                    return res.json().then(e => Promise.reject(e))
-                return res.json()
+                body: JSON.stringify(newNote)
             })
-            .then(note => this.context.addNote(note))
-            .then(
-                this.props.history.push('/')
-            )
-            .catch(error => {
-                alert(error.message)
-            })
+                    .then(res => {
+                        if (!res.ok)
+                            return res.json().then(e => Promise.reject(e))
+                        return res.json()
+                    })
+                    .then(note => this.context.addNote(note))
+                    .then(
+                        this.props.history.push('/')
+                    )
+                    .catch(error => {
+                        alert(error.message)
+                    })
+            
     }
 
     
@@ -85,15 +92,12 @@ class AddNote extends React.Component {
     
     
     render() {
-        const folderList = this.context.folders.map (folder => {
-        return (
-                <option key= {folder.id} value={folder.id}>{folder.name}</option>
-            )
-        })
+       const {folders = []} = this.context;
+       
         
         
         return (
-            <form onSubmit={this.handleNoteSubmit}>
+            <NotefulForm onSubmit={this.handleNoteSubmit}>
                 <label htmlFor="note-name">Note name: </label>
                 <input
                     id="note-name"
@@ -121,15 +125,19 @@ class AddNote extends React.Component {
                     defaultValue="Select Folder"
                     required
                 >
-                    <option disabled>Select Folder</option>
-                    {folderList}
+                    <option value={null}>...</option>
+                    {folders.map(folder =>
+                        <option key={folder.id} value={folder.id}>
+                            {folder.name}
+                        </option>
+                    )}
                         </select>
                     
                 <button
                     id='save-note'
                     type="submit"
                 >Save</button>
-            </form>
+            </NotefulForm>
         )
     }
 }

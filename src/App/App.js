@@ -36,26 +36,27 @@ class App extends Component {
     });
   }
    
-  componentDidMount() {
-    Promise.all([
-      fetch( `${ config.API_ENDPOINT }/notes` ),
-      fetch( `${ config.API_ENDPOINT }/folders` )
-    ])
-    .then(( [ notesRes, foldersRes ]) => {
-      if ( !notesRes.ok ) 
-        return notesRes.json().then( event => Promise.reject( event ) );
-      if ( !foldersRes.ok ) 
-        return foldersRes.json().then( event => Promise.reject( event ) );
 
-      return Promise.all( [ notesRes.json(), foldersRes.json() ] );
-    })
-    .then(( [ notes, folders ]) => {
-      this.setState({ notes, folders })
-    })
-    .catch( error => {
-      console.log({ error })
-    });
-  }
+    componentDidMount() {
+      Promise.all([
+        fetch( `${ config.API_ENDPOINT }/notes` ),
+        fetch( `${ config.API_ENDPOINT }/folders` )
+      ])
+          .then(( [ notesRes, foldersRes ]) => {
+            if ( !notesRes.ok )
+              return notesRes.json().then( event => Promise.reject( event ) );
+            if ( !foldersRes.ok )
+              return foldersRes.json().then( event => Promise.reject( event ) );
+          
+            return Promise.all( [ notesRes.json(), foldersRes.json() ] );
+          })
+          .then(( [ notes, folders ]) => {
+            this.setState({ notes, folders })
+          })
+          .catch( error => {
+            console.log({ error })
+          });
+    }
 
   renderNavRoutes() {
     return (
@@ -63,7 +64,7 @@ class App extends Component {
       <> 
         {['/', '/folder/:folderId'].map(path => (
           <Route 
-            exact={true} 
+            exact
             key={path} 
             path={path} 
             component={NoteListNav}
@@ -90,7 +91,7 @@ class App extends Component {
     <> 
       {['/', '/folder/:folderId'].map(path => (
         <Route 
-          exact={true} 
+          exact
           key={path} 
           path={path} 
           component={NoteListMain}
